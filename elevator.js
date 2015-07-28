@@ -1,6 +1,5 @@
-
-var SPEED = 2000;
-
+var EventEmitter = require('events').EventEmitter;
+var util = require('util');
 
 /**
  * Elevator
@@ -9,16 +8,22 @@ var SPEED = 2000;
 function Elevator() {
 	this.floor = 0;
 	this.destination = 0;
-
-	// Directions that we can travel
-	this.UP = 1;
-	this.DOWN = -1;
-	this.IDLE = 0;
-
-	this.direction = this.IDLE;
-
-	this.motor = setInterval(this.move, SPEED, this);
+	this.direction = Elevator.IDLE;
+	this.motor = setInterval(this.move.bind(this), Elevator.SPEED);
 }
+util.inherits(Elevator, EventEmitter);
+
+/**
+ * Elevator direction constants.
+ */
+Elevator.UP = 1;
+Elevator.DOWN = -1;
+Elevator.IDLE = 0;
+
+/**
+ * Speed of elevator actions, in milliseconds.
+ */
+Elevator.SPEED = 1000;
 
 /**
  * getFloor
@@ -54,34 +59,48 @@ Elevator.prototype.getDestination = function() {
  * @return: 	Send the elevator to a floor number
  */
 Elevator.prototype.goto = function(destination) {
-
 	this.destination = destination;
 
-	console.log('Request to move to floor %d', destination);
+	console.log('Moving to floor %d', destination);
 
 	if (this.floor < destination) {
-		this.direction = this.UP;
+		this.direction = Elevator.UP;
 	} else if (this.floor > destination) {
-		this.direction = this.DOWN;
+		this.direction = Elevator.DOWN;
 	} else {
-		this.direction = this.IDLE;
+		this.direction = Elevator.IDLE;
 		console.log('Already on floor %d', destination);
 	}
 };
 
-Elevator.prototype.move = function(elevator) {
-	if (elevator.direction == elevator.IDLE) return;
+/**
+ * Move one floor on every interval, determined by Elevator.SPEED.
+ *
+ * @private
+ */
+Elevator.prototype.move = function() {
+	if (this.direction == Elevator.IDLE) return;
 
-	elevator.floor += elevator.direction;
+	this.floor += this.direction;
 
-	if (elevator.floor == elevator.destination) {
-		elevator.direction = elevator.IDLE;
-		console.log('Arrived at floor %d', elevator.floor);
+	if (this.floor == this.destination) {
+		this.direction = Elevator.IDLE;
+		this.emit('idle', this.floor);
+		console.log('Arrived at floor %d', this.floor);
 	} else {
-		console.log('Moving. New floor: %d', elevator.floor);		
+		this.emit('move', this.floor, this.direction);
+		console.log('Moving. New floor: %d', this.floor);
 	}
-
 };
 
+/**
+ * Make a request for a particular floor.
+ *
+ * @param {Number} destination The destination floor.
+ */
+Elevator.prototype.request = function(destination) {
+	console.log('Request for floor %d', destination);
+	this.emit('request', destination);
+}
 
 module.exports = Elevator;
