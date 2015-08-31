@@ -1,5 +1,9 @@
 {
   "devDependencies": {
     "mocha": "^2.2.5"
+  },
+  "scripts": {
+    "test": "mocha test/elevator.js"
   }
+
 }
