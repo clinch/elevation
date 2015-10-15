@@ -4,23 +4,42 @@ var Elevator = require('./elevator.js');
 var debug = require('debug')('SerialElevatorController');
 
 /**
+ * Elevator controllers should extend this abstract class.
+ */
+class AbstractElevatorController {
+	constructor(elevator) {
+		this.elevator = elevator;
+	}
+
+	requestFloor(floor, direction) {
+		throw new Error("Abstract method requestFloor not implemented");
+	}
+}
+
+/**
  * Simple Serial Elevator Controller - handle one request at a time.
  */
-class SerialElevatorController {
+class SerialElevatorController extends AbstractElevatorController {
 	constructor (elevator) {
+		super(elevator);
+
 		this.fifo = [];
-		this.elevator = elevator;
 
 		/* On floor request, queue and try to move the elevator. */
-		elevator.on('request', (destination) => {
+		elevator.on('floorRequest', (floor, direction) => {
 			debug('New elevator request');
-			this.fifo.push(destination);
+			this.fifo.push(floor);
 			this.next();
 		});
 
-		/* On arrival at a floor (idle), try to move the elevator. */
-		elevator.on('idle', (destination) => {
+		/* On arrival at a floor (stop), try to move the elevator. */
+		elevator.on('stop', (floor, direction) => {
 			this.next();
+		});
+
+		/* If there are no more move requests, the elevator is idle. */
+		elevator.on('idle', (floor, direction) => {
+			// Time for a beer.
 		});
 	}
 
@@ -28,7 +47,6 @@ class SerialElevatorController {
 	 * Handle the next request in the FIFO queue.
 	 */
 	next() {
-
 		/* No requests in the queue, so nowhere to go. */
 		if (!this.fifo.length) {
 			debug('No more requests in the queue');
@@ -36,7 +54,7 @@ class SerialElevatorController {
 		}
 
 		/* This simple controller doesn't change direction when moving. */
-		if (this.elevator.getDirection() !== Elevator.IDLE) {
+		if (this.elevator.getDirection() !== Elevator.STOPPED) {
 			return;
 		}
 
