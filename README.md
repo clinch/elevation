@@ -22,35 +22,39 @@ Your solution will be analyzed completely on how happy your passengers are at th
 
 ### Emits
 
-- **stop(floor, [direction])** : An event fired when Elevator stops at a given floor. Passengers can only embark/disembark from a stopped elevator. 
-    + Param **floor** : The floor which the elevator is stopped
-    + Param **direction** : (*Optional*) The direction which the elevator intends to travel after this stop.
-- **idle(floor, [direction])** : An event fired when the Elevator has no more instructions queued up and the elevator is waiting for future movements.
-    + Param **floor** : The floor which the elevator is stopped
-    + Param **direction** : (*Optional*) The direction which the elevator intends to travel after this stop.
+- `stop(floor, [direction])`: An event fired when Elevator stops at a given floor. Passengers can only embark/disembark from a stopped elevator.
+    + Param `floor`: The floor which the elevator is stopped
+    + Param `direction`: (*Optional*) The direction which the elevator intends to travel after this stop.
+- `idle(floor, [direction])` : An event fired when the Elevator has no more instructions queued up and the elevator is waiting for future movements.
+    + Param `floor`: The floor which the elevator is stopped
+    + Param `direction`: (*Optional*) The direction which the elevator intends to travel after this stop.
+- `floorRequest(floor, [direction])`: A request is made to pick up or drop off a passenger. In the case of a Passenger waiting for the elevator to arrive, they will request the elevator to a *floor* and also specify an intended *direction*. A passenger who has already been picked up will call this but will only specify a *floor*, since they are already on the elevator.
+    + Param `floor`: The floor which is requested for a passenger to get on or get off.
+    + Param `direction`: (*Optional*) The (possibly incorrect) direction which the passenger intends to travel.
 
 ### Methods
 
-- **goto(floor)** : Moves the elevator to the specified floor. Once the elevator arrives at the floor, it will emit a *stop* event. **Note**: Calling this method when the elevator is en route to a previous floor request will immediately change its destination without stopping at the previous floor. 
+- `goto(floor)` : Moves the elevator to the specified floor. Once the elevator arrives at the floor, it will emit a *stop* event. **Note**: Calling this method when the elevator is en route to a previous floor request will immediately change its destination without stopping at the previous floor.
+- `requestFloor(floor, [direction])`: Make a request to pick up or drop off a passenger. In the case of a Passenger waiting for the elevator to arrive, they will request the elevator to a *floor* and also specify an intended *direction*. A passenger who has already been picked up will call this but will only specify a *floor*, since they are already on the elevator.
+    + Param `floor`: The floor which is requested for a passenger to get on or get off.
+    + Param `direction`: (*Optional*) The (possibly incorrect) direction which the passenger intends to travel.
 
 ## Passenger
 
 ### Emits
 
-- **embark()** : An event fired when the Passenger gets on an elevator.
-- **disembark()** : An event fired when the Passenger gets off an elevator.
+- `embark()` : An event fired when the Passenger gets on an elevator.
+- `disembark()` : An event fired when the Passenger gets off an elevator.
 
 ### Properties
 
-- **satisfaction** : The satisfaction of a Passenger (between 0-100) will be calculated based on how long they had to wait for an elevator to arrive, whether it travelled only in the direction they wanted to go, and how long their trip was to reach their destination. 
+- `satisfaction`: The satisfaction of a Passenger (between 0-100) will be calculated based on how long they had to wait for an elevator to arrive, whether it travelled only in the direction they wanted to go, and how long their trip was to reach their destination.
 
 ## ElevatorController
 
-### Methods
+The elevator controller is expected to listen to events from the elevator, and move the elevator accordingly. The controller should aim to move the elevator to fulfill the requests from the elevator passengers.
 
-- **requestFloor(floor, [direction])** : A request is made to the controller to pick up or drop off a passenger. In the case of a Passenger waiting for the elevator to arrive, they will request the elevator to a *floor* and also specify an intended *direction*. A passenger who has already been picked up will call this but will only specify a *floor*, since they are already on the elevator.
-    + Param **floor** : The floor which is requested for a passenger to get on or get off.
-    + Param **direction** : (*Optional*) The (possibly incorrect) direction which the passenger intends to travel.
+
 
 # Installing
 ```

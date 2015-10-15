@@ -13,14 +13,14 @@ class Elevator extends events.EventEmitter {
 
 		this.floor = 0;
 		this.destination = 0;
-		this.direction = Elevator.IDLE;
-		this.motor = setInterval(this.move.bind(this), Elevator.SPEED);		
+		this.direction = Elevator.STOPPED;
+		this.motor = setInterval(this.move.bind(this), Elevator.SPEED);
 	}
 
 	/**
 	 * getFloor
 	 *
-	 * @return: 	The floor that the elevator is currently positioned at.
+	 * @return The floor that the elevator is currently positioned at.
 	 */
 	getFloor() {
 		return this.floor;
@@ -29,7 +29,7 @@ class Elevator extends events.EventEmitter {
 	/**
 	 * getDirection
 	 *
-	 * @return: 	The direction that this elevator is currently travelling.
+	 * @return The direction that this elevator is currently travelling.
 	 */
 	getDirection() {
 		return this.direction;
@@ -38,17 +38,16 @@ class Elevator extends events.EventEmitter {
 	/**
 	 * getDestination
 	 *
-	 * @return: 	The last floor (destination) that was requested for this elevator
+	 * @return The last floor (destination) that was requested for this elevator
 	 */
 	getDestination() {
 		return this.destination;
 	};
 
 	/**
-	 * goto
 	 * Sends the elevator to a given floor, specified as a parameter.
 	 *
-	 * @return: 	Send the elevator to a floor number
+	 * @return Send the elevator to a floor number
 	 */
 	goto(destination) {
 		this.destination = destination;
@@ -60,7 +59,7 @@ class Elevator extends events.EventEmitter {
 		} else if (this.floor > destination) {
 			this.direction = Elevator.DOWN;
 		} else {
-			this.direction = Elevator.IDLE;
+			this.direction = Elevator.STOPPED;
 			debug('Already on floor %d', destination);
 		}
 	};
@@ -71,13 +70,15 @@ class Elevator extends events.EventEmitter {
 	 * @private
 	 */
 	move() {
-		if (this.direction == Elevator.IDLE) return;
+		if (this.direction == Elevator.STOPPED) {
+			return;
+		}
 
 		this.floor += this.direction;
 
 		if (this.floor == this.destination) {
-			this.direction = Elevator.IDLE;
-			this.emit('idle', this.floor);
+			this.direction = Elevator.STOPPED;
+			this.emit('stop', this.floor);
 			debug('Arrived at floor %d', this.floor);
 		} else {
 			this.emit('move', this.floor, this.direction);
@@ -91,9 +92,9 @@ class Elevator extends events.EventEmitter {
 	 *
 	 * @param {Number} destination The destination floor.
 	 */
-	request(destination) {
-		debug('Request for floor %d', destination);
-		this.emit('request', destination);
+	requestFloor(floor, direction) {
+		debug('Request for floor %d, direction %d', floor, direction);
+		this.emit('floorRequest', floor, direction);
 	}
 }
 
@@ -102,7 +103,7 @@ class Elevator extends events.EventEmitter {
  */
 Elevator.UP = 1;
 Elevator.DOWN = -1;
-Elevator.IDLE = 0;
+Elevator.STOPPED = 0;
 
 /**
  * Speed of elevator actions, in milliseconds.
