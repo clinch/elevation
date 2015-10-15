@@ -2,6 +2,13 @@ var assert = require("assert")
 var Elevator = require('../elevator');
 
 describe('Elevator', function() {
+
+	it('contains directionally valid constants', function() {
+		assert.equal(-1, Elevator.DOWN);
+		assert.equal(1, Elevator.UP);
+		assert.equal(0, Elevator.IDLE);
+	});
+
 	var elevator = new Elevator();
 	it('starts on the ground floor in idle state', function () {
 		assert.equal(0, elevator.getFloor());
