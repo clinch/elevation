@@ -14,6 +14,7 @@ class Elevator extends events.EventEmitter {
 		this.floor = 0;
 		this.destination = 0;
 		this.direction = Elevator.STOPPED;
+		this.motor = undefined;
 	}
 
 	/**
@@ -73,7 +74,7 @@ class Elevator extends events.EventEmitter {
 	 * @return {boolean}
 	 */
 	isIdle() {
-		return Boolean(this.motor);
+		return !Boolean(this.motor);
 	}
 
 	/**
@@ -84,16 +85,14 @@ class Elevator extends events.EventEmitter {
 	goto(destination) {
 		this.destination = destination;
 
-		if (this.direction === Elevator.STOPPED) {
+		if (this.isIdle()) {
+			this.move();
+		} else if (this.direction === Elevator.STOPPED) {
 			if (this.floor < this.destination) {
 				this.emit('stop', this.floor, Elevator.UP);
 			} else if (this.floor > this.destination) {
 				this.emit('stop', this.floor, Elevator.DOWN);
 			}
-		}
-
-		if (this.isIdle()) {
-			move();
 		}
 
 		debug('Setting destination to floor %d', destination);
@@ -117,15 +116,15 @@ class Elevator extends events.EventEmitter {
 				this.idle();
 				debug('Idle at floor %d.', this.floor);
 			} else {
-				this.emit('stop', this.floor); // Don't know where the controller will send us next.
 				this.direction = Elevator.STOPPED;
 				this.destination = undefined;
-				debug('Arrived at floor %d. Stopping.', destination);
+				this.emit('stop', this.floor); // Don't know where the controller will send us next.
+				debug('Arrived at floor %d. Stopping.', this.floor);
 			}
 		}
 
 		if (this.direction !== Elevator.STOPPED && this.isIdle()) {
-			run();
+			this.run();
 		}
 	};
 
