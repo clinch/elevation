@@ -4,6 +4,8 @@
   },
   "scripts": {
     "test": "mocha test/elevator.js"
+  },
+  "dependencies": {
+    "debug": "^2.2.0"
   }
-
 }
