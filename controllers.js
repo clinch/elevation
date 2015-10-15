@@ -1,31 +1,37 @@
+"use strict";
+
 var Elevator = require('./elevator.js');
+var debug = require('debug')('SerialElevatorController');
 
 /**
  * Simple Serial Elevator Controller - handle one request at a time.
  */
-function SerialElevatorController(elevator) {
-	this.fifo = [];
-	this.elevator = elevator;
+class SerialElevatorController {
+	constructor (elevator) {
+		this.fifo = [];
+		this.elevator = elevator;
 
-	/* On floor request, queue and try to move the elevator. */
-	elevator.on('request', (function(destination) {
-		this.fifo.push(destination);
-		this.next();
-	}).bind(this));
+		/* On floor request, queue and try to move the elevator. */
+		elevator.on('request', (destination) => {
+			debug('New elevator request');
+			this.fifo.push(destination);
+			this.next();
+		});
 
-	/* On arrival at a floor (idle), try to move the elevator. */
-	elevator.on('idle', (function(destination) {
-		this.next();
-	}).bind(this));
-}
+		/* On arrival at a floor (idle), try to move the elevator. */
+		elevator.on('idle', (destination) => {
+			this.next();
+		});
+	}
 
-SerialElevatorController.prototype = {
 	/**
 	 * Handle the next request in the FIFO queue.
 	 */
-	next: function() {
+	next() {
+
 		/* No requests in the queue, so nowhere to go. */
 		if (!this.fifo.length) {
+			debug('No more requests in the queue');
 			return;
 		}
 
@@ -36,6 +42,8 @@ SerialElevatorController.prototype = {
 
 		this.elevator.goto(this.fifo.shift());
 	}
-};
+
+}
+
 
 exports.SerialElevatorController = SerialElevatorController;
