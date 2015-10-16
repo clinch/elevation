@@ -22,7 +22,9 @@ Your solution will be analyzed completely on how happy your passengers are at th
 
 ### Emits
 
-- `stop(floor, [direction])`: An event fired when Elevator stops at a given floor. Passengers can only embark/disembark from a stopped elevator. **Please Note**: When the elevator stops at a floor, it will emit a stop event with no direction. If the controller issues a goto() command while the elevator is stopped, the elevator will emit *another* stop event *with* a direction.
+- `stop(floor)`: An event fired when Elevator stops at a given floor. Passengers can only embark/disembark from a stopped elevator. At this stage, the direction is not known because the elevator has not yet recieved it's next goto command from the controller.
+    + Param `floor`: The floor which the elevator is stopped
+- `load(floor, direction)`: An event fired when Elevator is stopped at a given floor and will soon begin moving. This event occurrs when  the elevator is given a goto command from the controller. Passengers can embark/disembark.
     + Param `floor`: The floor which the elevator is stopped
     + Param `direction`: (*Optional*) The direction which the elevator intends to travel after this stop.
 - `idle(floor, [direction])` : An event fired when the Elevator has no more instructions queued up and the elevator is waiting for future movements.

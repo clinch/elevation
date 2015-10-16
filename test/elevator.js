@@ -77,7 +77,7 @@ describe('Elevator', function() {
 			assert.equal(elevator.getDestination(), undefined);
 			assert.equal(direction, undefined);
 
-			elevator.once('stop', function(floor, direction) {
+			elevator.once('load', function(floor, direction) {
 				// remains stopped until next tick. Second callback differs in direction only.
 				assert.equal(floor, 1);
 				assert.equal(elevator.getFloor(), 1);
@@ -104,7 +104,7 @@ describe('Elevator', function() {
 
 	it('goto() while stopped changes the stop direction as much as is desired', function(done) {
 		elevator.goto(1);
-		move();
+		elevator.move();
 		done();
 	});
 
