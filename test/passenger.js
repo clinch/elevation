@@ -15,7 +15,7 @@ describe('Passenger', function() {
 	});
 
 	beforeEach(function() {
-		passenger = new Passenger(elevator, 1, Elevator.UP, 2);
+		passenger = new Passenger(1, elevator, 1, Elevator.UP, 2);
 	});
 
 	it('initializes properly', function() {
