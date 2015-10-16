@@ -71,4 +71,3 @@ class SerialElevatorController extends AbstractElevatorController {
 }
 
 exports.SerialElevatorController = SerialElevatorController;
-exports.JustKeepGoingController = JustKeepGoingController;
