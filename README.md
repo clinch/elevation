@@ -8,13 +8,17 @@ Control elevators to get people where they need to go. Passengers are waiting to
 
 In this problem, a single Elevator object exists which can move up and down within an elevator shaft. Controlling the elevator is relatively simple; you can move the elevator to any floor and when stopped on the floor, passengers can embark and disembark.
 
-Passengers will issue two requests to the elevator controller. The first request will be the floor where they are waiting and the request will also have an associated direction. Once the elevator has positioned itself on the requested floor and stopped, the passenger will issue his/her second request for the destination floor. Finally, once the destination floor has been reached, the passenger will disembark.
+**Passengers will issue two requests** to the elevator controller. The first request will be the floor where they are waiting and the request will also have an associated direction. Once the elevator has positioned itself on the requested floor and stopped, the passenger will issue his/her second request for the destination floor. Finally, once the destination floor has been reached, the passenger will disembark.
 
 # Task
 
-Create an ElevatorController class to accept requests from passengers and move the elevator in an efficient way, while keeping passengers happy.
+**You must only change controllers.js**. Your final solution should not have modified any other files.
 
-Your solution will be analyzed completely on how happy your passengers are at the end of their trip. Remember this as you come up with your solution.
+Feel free to create more input test files in the *data* directory. If you have a test file that would be beneficial to other people, please share it.
+
+Create an elevator controller class to accept requests from passengers and move the elevator in an efficient way, while keeping passengers happy. A sample controller has already been provided for you in controllers.js. Feel free to rip it apart as needed.
+
+Your solution will be analyzed entirely on how happy your passengers are at the end of their trips. Remember this as you come up with your solution.
 
 # Definitions
 
@@ -33,6 +37,9 @@ Your solution will be analyzed completely on how happy your passengers are at th
 - `floorRequest(floor, [direction])`: A request is made to pick up or drop off a passenger. In the case of a Passenger waiting for the elevator to arrive, they will request the elevator to a *floor* and also specify an intended *direction*. A passenger who has already been picked up will call this but will only specify a *floor*, since they are already on the elevator.
     + Param `floor`: The floor which is requested for a passenger to get on or get off.
     + Param `direction`: (*Optional*) The (possibly incorrect) direction which the passenger intends to travel.
+- `move(floor, direction)`: An event fired every time the elevator moves past a floor.
+    + Param `floor`: The floor the elevator is currently passing.
+    + Param `direction`: The direction which the elevator is travelling.
 
 ### Methods
 
@@ -55,8 +62,7 @@ Your solution will be analyzed completely on how happy your passengers are at th
 
 ## ElevatorController
 
-The elevator controller is expected to listen to events from the elevator, and move the elevator accordingly. The controller should aim to move the elevator to fulfill the requests from the elevator passengers.
-
+The elevator controller, found in *controllers.js*, is expected to listen to events from the elevator, and move the elevator accordingly. The controller should aim to move the elevator to fulfill the requests from the elevator passengers.
 
 
 # Installing
@@ -71,10 +77,11 @@ DEBUG=* node test in1
 ```
 See [https://github.com/visionmedia/debug](https://github.com/visionmedia/debug) for more details on using *debug*.
 
+
 # Testing
 Using the *debug* module, you could do something like this:
 ```
-DEBUG=Elevator,SerialElevatorController npm test
+DEBUG=Elevator,Passenger,SerialElevatorController npm test
 ```
 or perhaps just:
 ```
