@@ -29,9 +29,16 @@ class Passenger extends events.EventEmitter {
 	 * @return {[type]} [description]
 	 */
 	init() {
-		this.elevator.on('stop', this.checkFloor);		
+		this.elevator.on('stop', this.checkFloor.bind(this));		
 
 		this.requestElevator();
+	}
+
+	/**
+	 * @return {[int]} The current state of this passenger.
+	 */
+	getState() {
+		return this.state;
 	}
 
 	/**
@@ -62,6 +69,7 @@ class Passenger extends events.EventEmitter {
 	 * Passenger boards the elevator and then issues a new request to go to destination
 	 */
 	getOnElevator() {
+		debug('Getting on floor %d', this.origin);
 		this.state = Passenger.TRAVELLING;
 		this.emit('embark');
 		this.elevator.requestFloor(this.destination, null);
@@ -71,6 +79,7 @@ class Passenger extends events.EventEmitter {
 	 * Passenger gets off the elevator and is now complete.
 	 */
 	getOffElevator() {
+		debug('Getting off floor %d', this.destination);
 		this.elevator.removeListener('stop', this.checkFloor);
 		this.state = Passenger.DONE;
 		this.emit('disembark');
