@@ -25,8 +25,10 @@ class Passenger extends events.EventEmitter {
 
 		this.waitTimes = [];
 		this.actionTimes = [];
+		this.travelMovements = [];
 
 		this.cf = this.checkFloor.bind(this);
+		this.mv = this.recordMove.bind(this);
 
 		this.init();
 	}
@@ -82,6 +84,7 @@ class Passenger extends events.EventEmitter {
 		debug('%d getting on floor %d', this.id, this.origin);
 		this.state = Passenger.TRAVELLING;
 		this.emit('embark');
+		this.elevator.on('move', this.mv);
 		this.elevator.requestFloor(this.destination, null);
 	}
 
@@ -94,6 +97,7 @@ class Passenger extends events.EventEmitter {
 		
 		this.elevator.removeListener('stop', this.cf);
 		this.elevator.removeListener('load', this.cf);
+		this.elevator.removeListener('move', this.mv);
 
 		this.state = Passenger.DONE;
 		
@@ -101,6 +105,13 @@ class Passenger extends events.EventEmitter {
 		debug('Travel time: %d . %d', this.waitTimes[1][0], this.waitTimes[1][1]);
 
 		this.emit('disembark');
+	}
+
+	/**
+	 * Keeps track of elevator movements while the passenger is travelling
+	 */
+	recordMove(floor, direction) {
+		this.travelMovements.push({floor: floor, direction: direction});
 	}
 
 	/**
