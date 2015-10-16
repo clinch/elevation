@@ -4,6 +4,7 @@ var Elevator = require ('./elevator');
 var controllers = require('./controllers');
 var Passenger = require('./passenger');
 var process = require('process');
+var SatisfactionAnalyzer = require('./satisfactionAnalyzer');
 var debug = require('debug')('elevation:test');
 
 let elevator = new Elevator();
@@ -13,9 +14,9 @@ let done = false;
 
 let data = [
 	{ delay:  7, origin:  5, direction: Elevator.UP, destination: 6 }, // Move from 5 to 6. Then pause for 7 secs 
-	{ delay:  3, origin:  3, direction: Elevator.UP, destination: 6 }, // Move from 3 to 6. Then pause for 3 secs 
+	{ delay:  3, origin:  3, direction: Elevator.UP, destination: 6 }/*, // Move from 3 to 6. Then pause for 3 secs 
 	{ delay: 4, origin:  12, direction: Elevator.DOWN, destination: 1 }, // etc, ... 
-	{ delay: 5, origin:  7, direction: Elevator.DOWN, destination: 2  }
+	{ delay: 5, origin:  7, direction: Elevator.DOWN, destination: 2  }*/
 ];
 
 function* getNextPassenger() {
@@ -52,6 +53,10 @@ function checkForDone() {
 		if (Passenger.DONE !== passengers[i].getState()) {
 			return;
 		}
+	}
+
+	for (let i = 0; i < passengers.length; i++) {
+		SatisfactionAnalyzer.analyze(passengers[i]);
 	}
 
 	debug('All passengers have been delivered safely');
