@@ -88,6 +88,9 @@ class Elevator extends events.EventEmitter {
 		if (this.isIdle()) {
 			this.move();
 		} else if (this.direction === Elevator.STOPPED) {
+			// TODO: When we emit 'stop' events, then this triggers the controller to send the 
+			// 'next' request (before we've even finished dealing with the current one)
+
 			if (this.floor < this.destination) {
 				this.emit('stop', this.floor, Elevator.UP);
 			} else if (this.floor > this.destination) {
@@ -135,7 +138,6 @@ class Elevator extends events.EventEmitter {
 	 * @param {Number} destination The destination floor.
 	 */
 	requestFloor(floor, direction) {
-		debug('Request for floor %d, direction %d', floor, direction);
 		this.emit('floorRequest', floor, direction);
 	}
 }
