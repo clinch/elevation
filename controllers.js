@@ -27,9 +27,13 @@ class SerialElevatorController extends AbstractElevatorController {
 
 		/* On floor request, queue and try to move the elevator. */
 		elevator.on('floorRequest', (floor, direction) => {
-			debug('New elevator request');
+			debug('New elevator request. %d, %d', floor, direction);
 			this.fifo.push(floor);
-			this.next();
+
+			debug(this.fifo);
+			if (this.elevator.getDirection() === Elevator.STOPPED) {
+				this.next();
+			}
 		});
 
 		/* On arrival at a floor (stop), try to move the elevator. */
