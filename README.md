@@ -61,6 +61,13 @@ The elevator controller is expected to listen to events from the elevator, and m
 npm install
 ```
 
+# Running
+A test harness is included in *test.js*. You can pass in data files from the *data* directory. You should pass the name of test file as an argument. Set the environment variable `DEBUG` prior to running. Eg:
+```
+DEBUG=* node test in1
+```
+See [https://github.com/visionmedia/debug](https://github.com/visionmedia/debug) for more details on using *debug*.
+
 # Testing
 Using the *debug* module, you could do something like this:
 ```
