@@ -14,6 +14,12 @@ let controller = new controllers.SerialElevatorController(elevator);
 
 let done = false;
 
+if (process.argv.length < 3) {
+	console.log('Please provide an input file (eg: in1) as an argument');
+	console.log('Eg: $ DEBUG=* node test in1');
+	process.exit(1);
+}
+
 let data = require('./data/' + process.argv[2]);
 
 function* getNextPassenger() {
