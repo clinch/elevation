@@ -3,6 +3,7 @@
 
 var Elevator = require('./elevator');
 var events = require('events');
+var process = require('process');
 var debug = require('debug')('Passenger');
 
 /**
@@ -21,6 +22,9 @@ class Passenger extends events.EventEmitter {
 		this.satisfaction = 100;
 
 		this.state = Passenger.WAITING;
+
+		this.waitTimes = [];
+		this.actionTimes = [];
 
 		this.init();
 	}
@@ -63,6 +67,7 @@ class Passenger extends events.EventEmitter {
 	 * Request the elevator to come to this Passenger's origin.
 	 */
 	requestElevator() {
+		this.noteTime();
 		this.elevator.requestFloor(this.origin, this.direction);
 	}
 
@@ -70,6 +75,7 @@ class Passenger extends events.EventEmitter {
 	 * Passenger boards the elevator and then issues a new request to go to destination
 	 */
 	getOnElevator() {
+		this.noteTime();
 		debug('%d getting on floor %d', this.id, this.origin);
 		this.state = Passenger.TRAVELLING;
 		this.emit('embark');
@@ -80,10 +86,26 @@ class Passenger extends events.EventEmitter {
 	 * Passenger gets off the elevator and is now complete.
 	 */
 	getOffElevator() {
+		this.noteTime();
 		debug('%d getting off floor %d', this.id, this.destination);
+		
 		this.elevator.removeListener('stop', this.checkFloor);
 		this.state = Passenger.DONE;
+		
+		debug('Wait time: %d . %d', this.waitTimes[0][0], this.waitTimes[0][1]);
+		debug('Travel time: %d . %d', this.waitTimes[1][0], this.waitTimes[1][1]);
+
 		this.emit('disembark');
+	}
+
+	/**
+	 * Keeps track of the times that the elevator is taking to do its thing.
+	 */
+	noteTime() {
+		if (this.actionTimes.length > 0) {
+			this.waitTimes.push(process.hrtime(this.actionTimes[this.actionTimes.length - 1]));
+		}
+		this.actionTimes.push(process.hrtime());		
 	}
 }
 
