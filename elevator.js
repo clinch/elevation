@@ -11,6 +11,7 @@ class Elevator extends events.EventEmitter {
 	constructor() {
 		super();
 
+		this.setMaxListeners(100);
 		this.floor = 0;
 		this.destination = 0;
 		this.direction = Elevator.STOPPED;

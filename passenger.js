@@ -26,6 +26,8 @@ class Passenger extends events.EventEmitter {
 		this.waitTimes = [];
 		this.actionTimes = [];
 
+		this.cf = this.checkFloor.bind(this);
+
 		this.init();
 	}
 
@@ -34,7 +36,8 @@ class Passenger extends events.EventEmitter {
 	 * @return {[type]} [description]
 	 */
 	init() {
-		this.elevator.on('stop', this.checkFloor.bind(this));		
+		this.elevator.on('stop', this.cf);		
+		this.elevator.on('load', this.cf);
 
 		this.requestElevator();
 	}
@@ -89,7 +92,9 @@ class Passenger extends events.EventEmitter {
 		this.noteTime();
 		debug('%d getting off floor %d', this.id, this.destination);
 		
-		this.elevator.removeListener('stop', this.checkFloor);
+		this.elevator.removeListener('stop', this.cf);
+		this.elevator.removeListener('load', this.cf);
+
 		this.state = Passenger.DONE;
 		
 		debug('Wait time: %d . %d', this.waitTimes[0][0], this.waitTimes[0][1]);
