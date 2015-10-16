@@ -121,4 +121,4 @@ class SerialElevatorController extends AbstractElevatorController {
 	}
 }
 
-exports.SerialElevatorController = SerialElevatorController;
+module.exports = SerialElevatorController;

@@ -1,15 +1,14 @@
 "use strict";
 
 var Elevator = require('./elevator');
-var controllers = require('./controllers');
+var Controller = require('./controllers');
 var Passenger = require('./passenger');
 var process = require('process');
 var SatisfactionAnalyzer = require('./satisfactionAnalyzer');
 var debug = require('debug')('elevation:test');
 
 let elevator = new Elevator();
-let controller = new controllers.SerialElevatorController(elevator);
-//let controller = new controllers.JustKeepGoingController(elevator);
+let controller = new Controller(elevator);
 
 
 let done = false;
