@@ -118,8 +118,8 @@ class Elevator extends events.EventEmitter {
 			} else {
 				this.direction = Elevator.STOPPED;
 				this.destination = undefined;
-				this.emit('stop', this.floor); // Don't know where the controller will send us next.
 				debug('Arrived at floor %d. Stopping.', this.floor);
+				this.emit('stop', this.floor); // Don't know where the controller will send us next.
 			}
 		}
 

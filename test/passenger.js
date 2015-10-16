@@ -27,4 +27,8 @@ describe('Passenger', function() {
 		assert.equal(100, passenger.satisfaction);
 	});
 
+	it('has a state of WAITING immediately after creation', function() {
+		assert.strictEqual(Passenger.WAITING, passenger.getState());
+	})
+
 });
