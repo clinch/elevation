@@ -48,7 +48,7 @@ class Elevator extends events.EventEmitter {
 	 */
 	getFloor() {
 		return this.floor;
-	};
+	}
 
 	/**
 	 * getDirection
@@ -57,7 +57,7 @@ class Elevator extends events.EventEmitter {
 	 */
 	getDirection() {
 		return this.direction;
-	};
+	}
 
 	/**
 	 * getDestination
@@ -66,7 +66,7 @@ class Elevator extends events.EventEmitter {
 	 */
 	getDestination() {
 		return this.destination;
-	};
+	}
 
 	/**
 	 * Determine if the elevator is idle.
@@ -96,7 +96,7 @@ class Elevator extends events.EventEmitter {
 		}
 
 		debug('Setting destination to floor %d', destination);
-	};
+	}
 
 	/**
 	 * Move one floor on every interval, determined by Elevator.SPEED.
@@ -126,7 +126,7 @@ class Elevator extends events.EventEmitter {
 		if (this.direction !== Elevator.STOPPED && this.isIdle()) {
 			this.run();
 		}
-	};
+	}
 
 
 	/**
