@@ -1,7 +1,7 @@
 "use strict";
 
 
-var Elevator = require('./Elevator');
+var Elevator = require('./elevator');
 var events = require('events');
 var debug = require('debug')('Passenger');
 
