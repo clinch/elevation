@@ -8,6 +8,8 @@ var debug = require('debug')('elevation:test');
 
 let elevator = new Elevator();
 let controller = new controllers.SerialElevatorController(elevator);
+//let controller = new controllers.JustKeepGoingController(elevator);
+
 
 let done = false;
 
