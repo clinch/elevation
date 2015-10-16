@@ -10,9 +10,10 @@ var debug = require('debug')('Passenger');
  */
 class Passenger extends events.EventEmitter {
 
-	constructor(elevator, origin, direction, destination) {
+	constructor(id, elevator, origin, direction, destination) {
 		super();
 
+		this.id = id;
 		this.elevator = elevator;
 		this.origin = origin;
 		this.direction = direction;
@@ -69,7 +70,7 @@ class Passenger extends events.EventEmitter {
 	 * Passenger boards the elevator and then issues a new request to go to destination
 	 */
 	getOnElevator() {
-		debug('Getting on floor %d', this.origin);
+		debug('%d getting on floor %d', this.id, this.origin);
 		this.state = Passenger.TRAVELLING;
 		this.emit('embark');
 		this.elevator.requestFloor(this.destination, null);
@@ -79,7 +80,7 @@ class Passenger extends events.EventEmitter {
 	 * Passenger gets off the elevator and is now complete.
 	 */
 	getOffElevator() {
-		debug('Getting off floor %d', this.destination);
+		debug('%d getting off floor %d', this.id, this.destination);
 		this.elevator.removeListener('stop', this.checkFloor);
 		this.state = Passenger.DONE;
 		this.emit('disembark');

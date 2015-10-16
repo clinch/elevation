@@ -20,6 +20,7 @@ let data = [
 
 function* getNextPassenger() {
 	for (let i = 0; i < data.length; i++) {
+		data[i].id = i;
 		yield data[i];
 	}
 }
@@ -33,7 +34,7 @@ function generatePassenger() {
 		setInterval(checkForDone, 1000); 
 	} else {
 		debug('Creating new passenger. Going from %d to %d', passengerData.value.origin, passengerData.value.destination);
-		newPassenger = new Passenger(elevator, passengerData.value.origin, passengerData.value.direction, passengerData.value.destination);
+		newPassenger = new Passenger(passengerData.value.origin, elevator, passengerData.value.origin, passengerData.value.direction, passengerData.value.destination);
 		newPassenger.on('disembark', checkForDone);
 
 		passengers.push(newPassenger);
