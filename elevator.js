@@ -83,22 +83,21 @@ class Elevator extends events.EventEmitter {
 	 * @param {integer} The destination floor number to which the elevator should travel.
 	 */
 	goto(destination) {
+		debug('Setting destination to floor %d', destination);
+
 		this.destination = destination;
 
-		if (this.isIdle()) {
-			this.move();
-		} else if (this.direction === Elevator.STOPPED) {
-			// TODO: When we emit 'stop' events, then this triggers the controller to send the 
-			// 'next' request (before we've even finished dealing with the current one)
-
+		if (this.direction === Elevator.STOPPED) {
 			if (this.floor < this.destination) {
-				this.emit('stop', this.floor, Elevator.UP);
+				this.emit('load', this.floor, Elevator.UP);
 			} else if (this.floor > this.destination) {
-				this.emit('stop', this.floor, Elevator.DOWN);
+				this.emit('load', this.floor, Elevator.DOWN);
 			}
 		}
 
-		debug('Setting destination to floor %d', destination);
+		if (this.isIdle()) {
+			this.move();
+		}
 	}
 
 	/**
@@ -109,6 +108,10 @@ class Elevator extends events.EventEmitter {
 	move() {
 		this.floor += this.direction;
 
+		if (this.direction !== Elevator.STOPPED) {
+			this.emit('move', this.floor, this.direction);
+		}
+
 		if (this.floor < this.destination) {
 			this.direction = Elevator.UP;
 		} else if (this.floor > this.destination) {
@@ -116,8 +119,8 @@ class Elevator extends events.EventEmitter {
 		} else {
 			if (this.direction === Elevator.STOPPED) {
 				// We've been stopped for a cycle. We're now idle.
-				this.idle();
 				debug('Idle at floor %d.', this.floor);
+				this.idle();
 			} else {
 				this.direction = Elevator.STOPPED;
 				this.destination = undefined;

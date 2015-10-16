@@ -22,7 +22,9 @@ Your solution will be analyzed completely on how happy your passengers are at th
 
 ### Emits
 
-- `stop(floor, [direction])`: An event fired when Elevator stops at a given floor. Passengers can only embark/disembark from a stopped elevator.
+- `stop(floor)`: An event fired when Elevator stops at a given floor. Passengers can only embark/disembark from a stopped elevator. At this stage, the direction is not known because the elevator has not yet recieved it's next goto command from the controller.
+    + Param `floor`: The floor which the elevator is stopped
+- `load(floor, direction)`: An event fired when Elevator is stopped at a given floor and will soon begin moving. This event occurrs when  the elevator is given a goto command from the controller. Passengers can embark/disembark.
     + Param `floor`: The floor which the elevator is stopped
     + Param `direction`: (*Optional*) The direction which the elevator intends to travel after this stop.
 - `idle(floor, [direction])` : An event fired when the Elevator has no more instructions queued up and the elevator is waiting for future movements.
@@ -38,6 +40,7 @@ Your solution will be analyzed completely on how happy your passengers are at th
 - `requestFloor(floor, [direction])`: Make a request to pick up or drop off a passenger. In the case of a Passenger waiting for the elevator to arrive, they will request the elevator to a *floor* and also specify an intended *direction*. A passenger who has already been picked up will call this but will only specify a *floor*, since they are already on the elevator.
     + Param `floor`: The floor which is requested for a passenger to get on or get off.
     + Param `direction`: (*Optional*) The (possibly incorrect) direction which the passenger intends to travel.
+- Several accessors are also available. `getFloor()`, `getDirection()`, `getDestination()` will return the current (or last) floor, the current movement direction, and the current destination of the elevator.
 
 ## Passenger
 

@@ -1,7 +1,7 @@
 "use strict";
 
 var Elevator = require('./elevator.js');
-var debug = require('debug')('SerialElevatorController');
+var debug = require('debug')('Controller');
 
 /**
  * Elevator controllers should extend this abstract class.
@@ -28,12 +28,14 @@ class SerialElevatorController extends AbstractElevatorController {
 		/* On floor request, queue and try to move the elevator. */
 		elevator.on('floorRequest', (floor, direction) => {
 			debug('New elevator request. %d, %d', floor, direction);
-			this.fifo.push(floor);
-
-			debug(this.fifo);
-			if (this.elevator.getDirection() === Elevator.STOPPED) {
-				this.next();
+			if (!direction) {
+				/* Requests from passengers are handled immediately. */
+				this.fifo.unshift(floor);
+			} else {
+				/* Requests from passengers waiting on floors are queued. */
+				this.fifo.push(floor);
 			}
+			this.next();
 		});
 
 		/* On arrival at a floor (stop), try to move the elevator. */
@@ -43,7 +45,7 @@ class SerialElevatorController extends AbstractElevatorController {
 
 		/* If there are no more move requests, the elevator is idle. */
 		elevator.on('idle', (floor, direction) => {
-			// Time for a beer.
+			this.next();
 		});
 	}
 
@@ -62,10 +64,11 @@ class SerialElevatorController extends AbstractElevatorController {
 			return;
 		}
 
-		this.elevator.goto(this.fifo.shift());
+		var floor = this.fifo.shift();
+		debug('Goto %d', floor);
+		this.elevator.goto(floor);
 	}
-
 }
 
-
 exports.SerialElevatorController = SerialElevatorController;
+exports.JustKeepGoingController = JustKeepGoingController;
